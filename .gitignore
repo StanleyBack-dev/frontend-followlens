@@ -1,0 +1,15 @@
+/node_modules
+/.next/
+/out/
+/build
+/coverage
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+*.log
+
+# dotenv — NUNCA versionar segredos
+.env*
+!.env.example
+
+.vercel
