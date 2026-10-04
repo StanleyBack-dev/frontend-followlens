@@ -2,11 +2,12 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Copy, QrCode } from "lucide-react";
+import { Check, Copy, ExternalLink, QrCode } from "lucide-react";
 import {
   Alert,
   Badge,
   Button,
+  buttonClasses,
   Card,
   CardBody,
   CardHeader,
@@ -66,6 +67,7 @@ export function CheckoutCard({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pix, setPix] = useState<PixQrCode | null>(null);
+  const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   const digits = taxId.replace(/\D/g, "");
@@ -74,8 +76,9 @@ export function CheckoutCard({
     (1 - prices.yearly / (prices.monthly * 12)) * 100,
   );
 
-  useSubscriptionActivation(pix !== null, () => {
+  useSubscriptionActivation(pix !== null || invoiceUrl !== null, () => {
     setPix(null);
+    setInvoiceUrl(null);
     router.refresh();
   });
 
@@ -91,11 +94,10 @@ export function CheckoutCard({
         paymentMethod: method,
       });
       if (result.checkoutUrl) {
-        // Hosted invoice: the gateway collects the payment on its own page.
-        window.location.assign(result.checkoutUrl);
-        return;
-      }
-      if (result.pixQrCode?.payload || result.pixQrCode?.image) {
+        // Hosted invoice: the gateway collects the payment on its own page,
+        // opened in another tab while this one waits for the confirmation.
+        setInvoiceUrl(result.checkoutUrl);
+      } else if (result.pixQrCode?.payload || result.pixQrCode?.image) {
         setPix(result.pixQrCode);
       } else {
         setError("Não foi possível gerar a cobrança. Tente novamente.");
@@ -119,6 +121,42 @@ export function CheckoutCard({
     } catch {
       // Clipboard blocked: the code stays selectable on screen.
     }
+  }
+
+  if (invoiceUrl) {
+    return (
+      <Card>
+        <CardHeader
+          title="Falta só o pagamento"
+          description={`Assinatura ${CYCLE_LABEL[cycle].toLowerCase()} de ${formatCurrency(prices[cycle])} criada.`}
+        />
+        <CardBody className="space-y-4">
+          <p className="text-sm text-muted">
+            O pagamento é feito na página segura da Asaas, com cartão, boleto ou
+            Pix. Ela abre em outra aba; esta página libera o Pro sozinha assim
+            que o pagamento for confirmado.
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={invoiceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonClasses("primary", "lg")}
+            >
+              Ir para o pagamento
+              <ExternalLink className="size-4" aria-hidden />
+            </a>
+            <Button variant="ghost" onClick={() => setInvoiceUrl(null)}>
+              Escolher outro plano
+            </Button>
+          </div>
+          <p className="flex items-center gap-2 text-xs text-soft">
+            <Spinner size="sm" />
+            Aguardando a confirmação do pagamento…
+          </p>
+        </CardBody>
+      </Card>
+    );
   }
 
   return (
