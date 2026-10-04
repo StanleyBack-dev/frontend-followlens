@@ -4,9 +4,11 @@ import { AccountDeletionCard } from "@/features/account/components/AccountDeleti
 import { ProfileForm } from "@/features/account/components/ProfileForm";
 import { PLAN_LABEL, ROLE_LABEL } from "@/features/admin/model/admin-labels";
 import { InstallAppCard } from "@/features/install/components/InstallAppCard";
+import { ShareAppCard } from "@/features/share/components/ShareAppCard";
 import { accountService } from "@/server/services/account.service";
 import { authed } from "@/server/services/authed";
 import { formatDate, formatDateTime } from "@/shared/lib/format";
+import { SITE_NAME, SITE_TAGLINE, siteUrl } from "@/shared/lib/site";
 
 export const metadata: Metadata = { title: "Perfil" };
 
@@ -62,6 +64,11 @@ export default async function AccountPage() {
         </Card>
 
         <InstallAppCard />
+
+        <ShareAppCard
+          url={siteUrl()}
+          message={`${SITE_TAGLINE} com o ${SITE_NAME}.`}
+        />
 
         <AccountDeletionCard profile={profile} />
       </div>
