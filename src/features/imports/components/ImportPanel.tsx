@@ -8,7 +8,14 @@ import { useImportUpload } from "@/features/imports/hooks/useImportUpload";
 import type { ImportStatusView } from "@/shared/contracts/api";
 import { formatDateTime, formatRelative } from "@/shared/lib/format";
 
-export function ImportPanel({ status }: { status: ImportStatusView }) {
+export function ImportPanel({
+  status,
+  profileName,
+}: {
+  status: ImportStatusView;
+  /** Shown when the account has more than one profile to import into. */
+  profileName?: string;
+}) {
   const { uploading, feedback, upload } = useImportUpload();
   const { lastImport, today, freeInterval } = status;
   const nextAllowedAt = freeInterval?.nextAllowedAt ?? null;
@@ -35,6 +42,13 @@ export function ImportPanel({ status }: { status: ImportStatusView }) {
         }
       />
       <CardBody className="space-y-4">
+        {profileName && (
+          <p className="rounded-md border border-border bg-surface-muted px-3 py-2 text-sm text-muted">
+            O arquivo será importado no perfil{" "}
+            <strong className="text-fg">{profileName}</strong>. Para importar em
+            outro, troque o perfil no menu lateral.
+          </p>
+        )}
         {feedback?.kind === "success" && (
           <Alert
             tone={feedback.result.import.baseline ? "info" : "success"}

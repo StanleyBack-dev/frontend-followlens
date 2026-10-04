@@ -12,7 +12,7 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const user = await authed((token) => authService.me(token));
-  if (!user.termsAccepted) redirect("/accept-terms");
+  if (!user.termsAccepted) redirect("/aceitar-termos");
   const profiles = await authed((token) => profilesService.list(token));
   return (
     <AppShell user={user} profiles={profiles}>

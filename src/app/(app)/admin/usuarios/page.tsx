@@ -26,7 +26,7 @@ import {
 
 export const metadata: Metadata = { title: "Usuários" };
 
-const PATH = "/admin/users";
+const PATH = "/admin/usuarios";
 
 export default async function AdminUsersPage({
   searchParams,

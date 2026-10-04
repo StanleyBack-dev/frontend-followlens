@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Check } from "lucide-react";
 import {
   Alert,
@@ -6,7 +7,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  PageHeader,
   Pagination,
 } from "@/design-system";
 import { AwaitingPaymentNotice } from "@/features/billing/components/AwaitingPaymentNotice";
@@ -53,11 +53,6 @@ export default async function BillingPage({
 
   return (
     <>
-      <PageHeader
-        title="Assinatura"
-        description="Seu plano, a cobrança e o histórico de pagamentos."
-      />
-
       <div className="space-y-6">
         {!paying &&
           (returnedFromCheckout || subscription?.status === "pending") && (
@@ -133,6 +128,16 @@ export default async function BillingPage({
             </div>
           </Card>
         )}
+        <p className="text-sm text-muted">
+          Dúvida sobre a cobrança?{" "}
+          <Link
+            href="/suporte"
+            className="font-medium text-accent hover:underline"
+          >
+            Fale com o suporte
+          </Link>
+          .
+        </p>
       </div>
     </>
   );

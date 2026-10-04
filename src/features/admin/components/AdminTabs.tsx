@@ -4,8 +4,11 @@ import { usePathname } from "next/navigation";
 import { SegmentedNav } from "@/design-system";
 
 const TABS = [
-  { href: "/admin/users", label: "Usuários" },
-  { href: "/admin/syncs", label: "Sincronizações" },
+  { href: "/admin/visao-geral", label: "Visão geral" },
+  { href: "/admin/usuarios", label: "Usuários" },
+  { href: "/admin/assinaturas", label: "Assinaturas" },
+  { href: "/admin/chamados", label: "Chamados" },
+  { href: "/admin/sincronizacoes", label: "Sincronizações" },
 ];
 
 export function AdminTabs() {

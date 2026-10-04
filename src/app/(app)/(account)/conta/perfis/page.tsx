@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/design-system";
 import { ProfilesManager } from "@/features/profiles/components/ProfilesManager";
 import { authed } from "@/server/services/authed";
 import { authService } from "@/server/services/auth.service";
@@ -14,10 +13,6 @@ export default async function ProfilesPage() {
 
   return (
     <>
-      <PageHeader
-        title="Perfis do Instagram"
-        description="Os perfis que você acompanha nesta conta. O perfil em uso é escolhido no menu lateral."
-      />
       <ProfilesManager profiles={profiles} isPro={me.isPro} />
     </>
   );

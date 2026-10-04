@@ -190,6 +190,8 @@ export type AdminUser = {
 export type AdminOverview = {
   total: number;
   admins: number;
+  /** Users whose plan is Pro (paid or granted by an admin). */
+  pro: number;
   activeLast30Days: number;
 };
 
@@ -277,6 +279,71 @@ export type BillingPayment = {
   paidAt: string | null;
   invoiceUrl: string | null;
   createdAt: string;
+};
+
+// === Support ===
+export type SupportCategory =
+  "doubt" | "technical_issue" | "suggestion" | "billing" | "other";
+export type SupportTicketStatus = "open" | "answered" | "resolved";
+
+export type SupportMessageStatus = {
+  canSend: boolean;
+  /** When the next message is allowed; null while one can be sent. */
+  nextAllowedAt: string | null;
+};
+
+export type SendSupportMessageInput = {
+  category: SupportCategory;
+  message: string;
+};
+
+export type SentSupportMessage = {
+  protocolNumber: number;
+  category: SupportCategory;
+  message: string;
+  createdAt: string;
+};
+
+/** A ticket as the support team sees it. */
+export type SupportTicket = {
+  id: string;
+  protocolNumber: number;
+  category: SupportCategory;
+  message: string;
+  status: SupportTicketStatus;
+  adminReply: string | null;
+  repliedAt: string | null;
+  finalizedAt: string | null;
+  createdAt: string;
+  userName: string;
+  userEmail: string;
+  finalizedByName: string | null;
+};
+
+// === Admin dashboard ===
+export type AdminDashboard = {
+  users: AdminOverview;
+  subscriptions: {
+    byStatus: Record<SubscriptionStatus, number>;
+    activePro: number;
+    /** Estimated monthly recurring revenue, in BRL. */
+    monthlyRecurringRevenue: number;
+  };
+  support: { openTickets: number };
+};
+
+export type AdminSubscription = {
+  id: string;
+  userName: string;
+  userEmail: string;
+  status: SubscriptionStatus;
+  billingCycle: BillingCycle | null;
+  paymentMethod: PaymentMethod | null;
+  price: number | null;
+  proStartedAt: string | null;
+  currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
+  pastDueSince: string | null;
 };
 
 /** Error shape returned by every BFF route. */

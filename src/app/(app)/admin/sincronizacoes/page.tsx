@@ -14,7 +14,7 @@ import {
 
 export const metadata: Metadata = { title: "Sincronizações" };
 
-const PATH = "/admin/syncs";
+const PATH = "/admin/sincronizacoes";
 
 export default async function AdminSyncsPage({
   searchParams,

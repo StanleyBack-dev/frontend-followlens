@@ -1,12 +1,13 @@
-import type { Tone } from "@/design-system";
+import type { SelectOption, Tone } from "@/design-system";
 import type {
   BillingCycle,
   BillingPaymentStatus,
   CancellationReason,
   PaymentMethod,
+  SubscriptionStatus,
 } from "@/shared/contracts/api";
 
-export const BILLING_PATH = "/account/billing";
+export const BILLING_PATH = "/conta/assinatura";
 
 export const CYCLE_LABEL: Record<BillingCycle, string> = {
   monthly: "Mensal",
@@ -58,3 +59,24 @@ export function proBenefits(limits: {
     "Busca e filtro por seguidor nas listas",
   ];
 }
+
+export const SUBSCRIPTION_STATUS_LABEL: Record<
+  SubscriptionStatus,
+  { label: string; tone: Tone }
+> = {
+  active: { label: "Ativa", tone: "success" },
+  past_due: { label: "Em atraso", tone: "danger" },
+  pending: { label: "Aguardando pagamento", tone: "neutral" },
+  canceled: { label: "Cancelada", tone: "warning" },
+  expired: { label: "Expirada", tone: "neutral" },
+};
+
+export const SUBSCRIPTION_STATUSES = Object.keys(
+  SUBSCRIPTION_STATUS_LABEL,
+) as SubscriptionStatus[];
+
+export const SUBSCRIPTION_STATUS_OPTIONS: SelectOption[] =
+  SUBSCRIPTION_STATUSES.map((value) => ({
+    value,
+    label: SUBSCRIPTION_STATUS_LABEL[value].label,
+  }));

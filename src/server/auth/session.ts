@@ -14,7 +14,7 @@ export async function readSessionToken(): Promise<string | null> {
 /** For Server Components: the token, or a redirect to the login page. */
 export async function requireSessionToken(): Promise<string> {
   const token = await readSessionToken();
-  if (!token) redirect("/login");
+  if (!token) redirect("/entrar");
   return token;
 }
 

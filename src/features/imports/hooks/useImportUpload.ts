@@ -36,7 +36,7 @@ export function useImportUpload() {
         router.refresh();
       } catch (error) {
         if (error instanceof ApiClientError && error.status === 401) {
-          router.replace("/login?expired=1");
+          router.replace("/entrar?expired=1");
           return;
         }
         setFeedback({

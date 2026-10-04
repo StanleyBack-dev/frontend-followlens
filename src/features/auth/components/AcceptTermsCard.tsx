@@ -41,7 +41,7 @@ export function AcceptTermsCard() {
           <p className="mt-2 text-sm text-muted">
             Para usar o FollowLens, você precisa ler e aceitar nossos{" "}
             <Link
-              href="/terms"
+              href="/termos"
               target="_blank"
               className="text-accent underline"
             >
@@ -49,7 +49,7 @@ export function AcceptTermsCard() {
             </Link>{" "}
             e a{" "}
             <Link
-              href="/privacy"
+              href="/privacidade"
               target="_blank"
               className="text-accent underline"
             >
