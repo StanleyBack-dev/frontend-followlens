@@ -1,4 +1,5 @@
 import "server-only";
+import { readActiveProfileId } from "@/server/auth/session";
 import { serverEnv } from "@/server/config/env";
 import { BackendError } from "@/server/http/backend-error";
 
@@ -35,7 +36,12 @@ export async function backendFetch<T>(
     "x-internal-api-key": env.INTERNAL_API_KEY,
     ...request.headers,
   };
-  if (request.token) headers.authorization = `Bearer ${request.token}`;
+  if (request.token) {
+    headers.authorization = `Bearer ${request.token}`;
+    // The Instagram profile selected in the UI scopes every follower call.
+    const profileId = await readActiveProfileId();
+    if (profileId) headers["x-profile-id"] = profileId;
+  }
   if (request.rawBody !== undefined) {
     headers["content-type"] = "application/octet-stream";
   } else if (request.body !== undefined) {

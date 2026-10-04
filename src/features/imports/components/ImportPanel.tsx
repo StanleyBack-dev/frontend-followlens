@@ -2,6 +2,7 @@
 
 import { ExternalLink } from "lucide-react";
 import { Alert, Badge, Card, CardBody, CardHeader } from "@/design-system";
+import { ProUpsell } from "@/features/billing/components/ProUpsell";
 import { ImportDropzone } from "@/features/imports/components/ImportDropzone";
 import { useImportUpload } from "@/features/imports/hooks/useImportUpload";
 import type { ImportStatusView } from "@/shared/contracts/api";
@@ -9,7 +10,8 @@ import { formatDateTime, formatRelative } from "@/shared/lib/format";
 
 export function ImportPanel({ status }: { status: ImportStatusView }) {
   const { uploading, feedback, upload } = useImportUpload();
-  const { lastImport, today } = status;
+  const { lastImport, today, freeInterval } = status;
+  const nextAllowedAt = freeInterval?.nextAllowedAt ?? null;
 
   return (
     <Card>
@@ -21,9 +23,15 @@ export function ImportPanel({ status }: { status: ImportStatusView }) {
             : "Envie o arquivo exportado do Instagram para começar."
         }
         action={
-          <Badge tone={today.remaining > 0 ? "neutral" : "warning"}>
-            {today.remaining} de {today.limit} hoje
-          </Badge>
+          freeInterval ? (
+            <Badge tone={nextAllowedAt ? "warning" : "neutral"}>
+              1 a cada {freeInterval.days} dias
+            </Badge>
+          ) : (
+            <Badge tone={today.remaining > 0 ? "neutral" : "warning"}>
+              {today.remaining} de {today.limit} hoje
+            </Badge>
+          )
         }
       />
       <CardBody className="space-y-4">
@@ -45,7 +53,14 @@ export function ImportPanel({ status }: { status: ImportStatusView }) {
           <Alert tone="danger">{feedback.message}</Alert>
         )}
 
-        {today.remaining > 0 ? (
+        {nextAllowedAt ? (
+          <ProUpsell
+            title={`Próxima importação liberada em ${formatDateTime(nextAllowedAt)}`}
+          >
+            No plano Free é possível importar uma vez a cada{" "}
+            {freeInterval?.days} dias. No Pro não há espera.
+          </ProUpsell>
+        ) : today.remaining > 0 ? (
           <ImportDropzone uploading={uploading} onFile={upload} />
         ) : (
           <Alert tone="warning">
