@@ -11,6 +11,7 @@ export { Card, CardBody, CardHeader } from "./components/Card";
 export { Combobox, type ComboboxOption } from "./components/Combobox";
 export { EmptyState } from "./components/EmptyState";
 export { Field, inputClasses } from "./components/Field";
+export { Modal } from "./components/Modal";
 export { PageHeader } from "./components/PageHeader";
 export { Pagination } from "./components/Pagination";
 export { Select, type SelectOption } from "./components/Select";

@@ -6,7 +6,6 @@ import {
   Card,
   EmptyState,
   Field,
-  PageHeader,
   Pagination,
   Select,
   StatCard,
@@ -35,7 +34,8 @@ export default async function AdminUsersPage({
   searchParams: Promise<RawSearchParams>;
 }) {
   const params = await searchParams;
-  const search = firstParam(params, "search")?.trim().slice(0, 160) || undefined;
+  const search =
+    firstParam(params, "search")?.trim().slice(0, 160) || undefined;
   const role = oneOf(firstParam(params, "role"), ["user", "admin"] as const);
   const page = pageParam(params);
 
@@ -53,11 +53,6 @@ export default async function AdminUsersPage({
 
   return (
     <>
-      <PageHeader
-        title="Usuários"
-        description="Contas cadastradas, grupos de acesso e planos."
-      />
-
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         <StatCard
           label="Usuários"
@@ -120,7 +115,9 @@ export default async function AdminUsersPage({
               page={users.page}
               totalPages={users.totalPages}
               total={users.total}
-              hrefFor={(target) => buildHref(PATH, { search, role, page: target })}
+              hrefFor={(target) =>
+                buildHref(PATH, { search, role, page: target })
+              }
             />
           </>
         ) : (
@@ -128,7 +125,9 @@ export default async function AdminUsersPage({
             icon={<Users className="size-5" />}
             title="Nenhum usuário encontrado"
             description={
-              search || role ? "Ajuste os filtros e tente novamente." : undefined
+              search || role
+                ? "Ajuste os filtros e tente novamente."
+                : undefined
             }
           />
         )}

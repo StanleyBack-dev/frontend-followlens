@@ -24,6 +24,31 @@ export type SessionUser = {
   isMaster: boolean;
   termsAccepted: boolean;
   legalVersion: string;
+  /** When the account will be deleted, or null when not scheduled. */
+  deletionScheduledFor: string | null;
+};
+
+// === Account (self-service profile) ===
+export type AccountProfile = {
+  id: string;
+  email: string;
+  name: string;
+  pictureUrl: string | null;
+  plan: UserPlan;
+  role: UserRole;
+  isAdmin: boolean;
+  isMaster: boolean;
+  createdAt: string;
+  lastLoginAt: string | null;
+  deletion: { requestedAt: string; scheduledFor: string } | null;
+  deletionGraceDays: number;
+};
+
+export type UpdateAccountProfileInput = { name: string };
+
+export type AccountDeletionResult = {
+  profile: AccountProfile;
+  emailSent: boolean;
 };
 
 export type FollowerStatus = "active" | "lost";

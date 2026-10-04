@@ -5,7 +5,7 @@ import { BackendError } from "@/server/http/backend-error";
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 type BackendRequest = {
-  method?: "GET" | "POST" | "PATCH";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   /** Raw bytes sent as-is (used for the export file upload). */
   rawBody?: ArrayBuffer;
