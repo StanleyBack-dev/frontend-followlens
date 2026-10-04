@@ -5,8 +5,15 @@ import { GoogleSignIn } from "@/features/auth/components/GoogleSignIn";
 import { LoginShowcase } from "@/features/auth/components/LoginShowcase";
 import { Logo } from "@/features/layout/components/Logo";
 import { firstParam, type RawSearchParams } from "@/shared/lib/search-params";
+import { SITE_NAME, SITE_TAGLINE } from "@/shared/lib/site";
 
-export const metadata: Metadata = { title: "Entrar" };
+// The public face of the product: the only page (besides the legal ones)
+// offered to search engines, so it carries the product title, not "Entrar".
+export const metadata: Metadata = {
+  title: { absolute: `${SITE_NAME} — ${SITE_TAGLINE}` },
+  alternates: { canonical: "/entrar" },
+  robots: { index: true, follow: true },
+};
 
 export default async function LoginPage({
   searchParams,
