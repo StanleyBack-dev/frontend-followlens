@@ -20,7 +20,7 @@ export const config = {
     "/unfollows/:path*",
     "/followers/:path*",
     "/imports/:path*",
-    "/syncs/:path*",
+    "/account/:path*",
     "/admin/:path*",
   ],
 };
