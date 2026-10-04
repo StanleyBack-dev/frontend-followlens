@@ -6,7 +6,7 @@ const SESSION_COOKIE = process.env.SESSION_COOKIE_NAME ?? "fl_session";
 
 export function proxy(request: NextRequest) {
   if (!request.cookies.has(SESSION_COOKIE)) {
-    const login = new URL("/login", request.url);
+    const login = new URL("/entrar", request.url);
     return NextResponse.redirect(login);
   }
   return NextResponse.next();
@@ -16,11 +16,12 @@ export const config = {
   matcher: [
     "/",
     "/dashboard/:path*",
-    "/accept-terms",
-    "/unfollows/:path*",
-    "/followers/:path*",
-    "/imports/:path*",
-    "/account/:path*",
+    "/aceitar-termos",
+    "/historico/:path*",
+    "/seguidores/:path*",
+    "/importacoes/:path*",
+    "/conta/:path*",
+    "/suporte/:path*",
     "/admin/:path*",
   ],
 };

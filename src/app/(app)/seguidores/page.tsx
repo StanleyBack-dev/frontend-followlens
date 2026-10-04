@@ -27,7 +27,7 @@ import {
 
 export const metadata: Metadata = { title: "Seguidores" };
 
-const PATH = "/followers";
+const PATH = "/seguidores";
 
 export default async function FollowersPage({
   searchParams,

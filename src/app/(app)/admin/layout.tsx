@@ -19,9 +19,9 @@ export default async function AdminLayout({
     <>
       <PageHeader
         title="Admin"
-        description="Usuários, grupos de acesso e sincronizações."
+        description="Usuários, assinaturas, chamados de suporte e sincronizações."
       />
-      <div className="mb-6">
+      <div className="mb-6 overflow-x-auto">
         <AdminTabs />
       </div>
       {children}

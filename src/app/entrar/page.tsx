@@ -37,11 +37,11 @@ export default async function LoginPage({
         </Card>
         <p className="mt-6 text-center text-xs text-soft">
           Ao entrar, você concorda com os{" "}
-          <Link href="/terms" className="underline hover:text-muted">
+          <Link href="/termos" className="underline hover:text-muted">
             Termos de Uso
           </Link>{" "}
           e a{" "}
-          <Link href="/privacy" className="underline hover:text-muted">
+          <Link href="/privacidade" className="underline hover:text-muted">
             Política de Privacidade
           </Link>
           .

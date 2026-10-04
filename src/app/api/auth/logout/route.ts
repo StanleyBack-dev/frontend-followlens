@@ -11,7 +11,7 @@ export const POST = bffRoute(async () => {
 // (cookies can't be modified during render).
 export async function GET(request: NextRequest) {
   await clearSession();
-  const target = new URL("/login", request.url);
+  const target = new URL("/entrar", request.url);
   if (request.nextUrl.searchParams.get("reason") === "expired") {
     target.searchParams.set("expired", "1");
   }

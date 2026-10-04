@@ -4,10 +4,7 @@ import { useState, useSyncExternalStore, type ReactNode } from "react";
 import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  AtSign,
-  ChevronDown,
   CircleUserRound,
-  CreditCard,
   History,
   LayoutDashboard,
   LogOut,
@@ -17,7 +14,6 @@ import {
   PanelLeftOpen,
   ShieldCheck,
   UserMinus,
-  UserRound,
   Users,
   X,
 } from "lucide-react";
@@ -33,27 +29,31 @@ type NavItem = {
   href: string;
   label: string;
   icon: LucideIcon;
-  /** Active only on this exact path (it has sibling pages nested under it). */
-  exact?: boolean;
+  /** Other paths that belong to this entry (pages shown under its tabs). */
+  also?: string[];
 };
 
 const BASE_NAV: NavItem[] = [
   { href: "/dashboard", label: "Visão geral", icon: LayoutDashboard },
-  { href: "/unfollows", label: "Unfollows", icon: UserMinus },
-  { href: "/followers", label: "Seguidores", icon: Users },
-  { href: "/imports", label: "Importações", icon: History },
+  { href: "/historico", label: "Unfollows", icon: UserMinus },
+  { href: "/seguidores", label: "Seguidores", icon: Users },
+  { href: "/importacoes", label: "Importações", icon: History },
 ];
 
-// "Conta" group. Every user sees their own profile.
+// Everything about the user's own account lives on one page with tabs
+// (profile, Instagram profiles, subscription, support).
 const ACCOUNT_NAV: NavItem[] = [
-  { href: "/account", label: "Perfil", icon: UserRound, exact: true },
-  { href: "/account/profiles", label: "Perfis do Instagram", icon: AtSign },
-  { href: "/account/billing", label: "Assinatura", icon: CreditCard },
+  {
+    href: "/conta",
+    label: "Minha conta",
+    icon: CircleUserRound,
+    also: ["/suporte"],
+  },
 ];
 
-// Admin-only item (users + sync history live under /admin). `isAdmin` comes
-// from the backend and only hides the link; the backend rejects non-admins on
-// every admin endpoint.
+// Admin-only item (users, subscriptions, tickets and syncs live under
+// /admin). `isAdmin` comes from the backend and only hides the link; the
+// backend rejects non-admins on every admin endpoint.
 const ADMIN_ACCOUNT_NAV: NavItem[] = [
   { href: "/admin", label: "Admin", icon: ShieldCheck },
 ];
@@ -97,9 +97,8 @@ function NavPendingHint() {
 }
 
 function isActive(pathname: string, item: NavItem): boolean {
-  return (
-    pathname === item.href ||
-    (!item.exact && pathname.startsWith(`${item.href}/`))
+  return [item.href, ...(item.also ?? [])].some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
 }
 
@@ -166,14 +165,11 @@ export function AppShell({
   const accountItems = user.isAdmin
     ? [...ACCOUNT_NAV, ...ADMIN_ACCOUNT_NAV]
     : ACCOUNT_NAV;
-  const accountActive = accountItems.some((item) => isActive(pathname, item));
-  // Starts open only when the current page lives inside the group.
-  const [accountOpen, setAccountOpen] = useState(accountActive);
 
   async function logout() {
     setLeaving(true);
     await authClient.logout().catch(() => undefined);
-    router.replace("/login");
+    router.replace("/entrar");
     router.refresh();
   }
 
@@ -196,64 +192,23 @@ export function AppShell({
   }
 
   function renderAccount(rail: boolean) {
-    // Icon rail: no room for a sub-menu, so the items are shown directly.
-    if (rail) {
-      return (
-        <nav aria-label="Conta" className="flex flex-col gap-1">
-          {accountItems.map((item) => (
-            <NavLink
-              key={item.href}
-              item={item}
-              pathname={pathname}
-              rail
-              onNavigate={closeMobile}
-            />
-          ))}
-          {renderLogout(true)}
-        </nav>
-      );
-    }
     return (
-      <nav aria-label="Conta">
-        <button
-          type="button"
-          onClick={() => setAccountOpen((value) => !value)}
-          aria-expanded={accountOpen}
-          className={cn(
-            "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-            accountActive && !accountOpen
-              ? "text-accent"
-              : "text-muted hover:bg-surface-muted hover:text-fg",
-          )}
-        >
-          <CircleUserRound className="size-4 shrink-0" aria-hidden />
-          <span className="flex-1 text-left">Conta</span>
-          <ChevronDown
-            className={cn(
-              "size-4 transition-transform",
-              accountOpen && "rotate-180",
-            )}
-            aria-hidden
+      <nav aria-label="Conta" className="flex flex-col gap-1">
+        {accountItems.map((item) => (
+          <NavLink
+            key={item.href}
+            item={item}
+            pathname={pathname}
+            rail={rail}
+            onNavigate={closeMobile}
           />
-        </button>
-        {accountOpen && (
-          <div className="mt-1 ml-5 flex flex-col gap-1 border-l border-border pl-2">
-            {accountItems.map((item) => (
-              <NavLink
-                key={item.href}
-                item={item}
-                pathname={pathname}
-                onNavigate={closeMobile}
-              />
-            ))}
-            {renderLogout(false)}
-          </div>
-        )}
+        ))}
+        {renderLogout(rail)}
       </nav>
     );
   }
 
-  // Last entry of the "Conta" group, styled like its links.
+  // Last entry of the account links, styled like them.
   function renderLogout(rail: boolean) {
     return (
       <button
@@ -352,7 +307,7 @@ export function AppShell({
           >
             Sua conta e todos os dados serão excluídos em{" "}
             {formatDate(user.deletionScheduledFor)}.{" "}
-            <Link href="/account" className="font-medium underline">
+            <Link href="/conta" className="font-medium underline">
               Cancelar exclusão
             </Link>
           </Alert>

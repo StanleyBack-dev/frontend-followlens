@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Avatar,
-  Badge,
-  Card,
-  CardBody,
-  CardHeader,
-  PageHeader,
-} from "@/design-system";
+import { Avatar, Badge, Card, CardBody, CardHeader } from "@/design-system";
 import { AccountDeletionCard } from "@/features/account/components/AccountDeletionCard";
 import { ProfileForm } from "@/features/account/components/ProfileForm";
 import { PLAN_LABEL, ROLE_LABEL } from "@/features/admin/model/admin-labels";
@@ -31,11 +24,6 @@ export default async function AccountPage() {
 
   return (
     <>
-      <PageHeader
-        title="Perfil"
-        description="Seus dados de conta e as opções de exclusão."
-      />
-
       <div className="space-y-6">
         <Card>
           <CardBody>

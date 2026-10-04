@@ -36,7 +36,7 @@ export default async function ImportsPage({
               page={imports.page}
               totalPages={imports.totalPages}
               total={imports.total}
-              hrefFor={(target) => buildHref("/imports", { page: target })}
+              hrefFor={(target) => buildHref("/importacoes", { page: target })}
             />
           </>
         ) : (

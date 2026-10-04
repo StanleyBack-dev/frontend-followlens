@@ -84,7 +84,11 @@ export function AdminUsersTable({
                 <tr key={user.id} className="align-middle">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <Avatar name={user.name} src={user.pictureUrl} size="sm" />
+                      <Avatar
+                        name={user.name}
+                        src={user.pictureUrl}
+                        size="sm"
+                      />
                       <div className="min-w-0">
                         <p className="flex items-center gap-2 font-medium text-fg">
                           <span className="truncate">{user.name}</span>
@@ -103,7 +107,11 @@ export function AdminUsersTable({
                         )}
                       </div>
                       {saving && (
-                        <Spinner size="sm" label="Salvando" className="ml-auto" />
+                        <Spinner
+                          size="sm"
+                          label="Salvando"
+                          className="ml-auto"
+                        />
                       )}
                     </div>
                   </td>

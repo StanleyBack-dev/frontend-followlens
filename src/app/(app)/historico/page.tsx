@@ -30,7 +30,7 @@ import {
 
 export const metadata: Metadata = { title: "Unfollows" };
 
-const PATH = "/unfollows";
+const PATH = "/historico";
 const FILTERS = [
   { key: "lost", label: "Deixaram de seguir" },
   { key: "gained", label: "Novos" },
