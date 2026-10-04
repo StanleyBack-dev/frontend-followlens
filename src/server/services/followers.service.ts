@@ -2,7 +2,7 @@ import "server-only";
 import { backendFetch } from "@/server/http/backend-client";
 import type {
   Follower,
-  FollowerEvent,
+  FollowerEventsPage,
   FollowerEventType,
   FollowerFilterOptions,
   FollowersOverview,
@@ -37,10 +37,7 @@ export const followersService = {
     return backendFetch("/followers", { token, query: params });
   },
 
-  events(
-    token: string,
-    params: ListEventsParams,
-  ): Promise<Paginated<FollowerEvent>> {
+  events(token: string, params: ListEventsParams): Promise<FollowerEventsPage> {
     return backendFetch("/followers/events", { token, query: params });
   },
 

@@ -53,10 +53,35 @@ export default function TermsPage() {
 
       <h2>5. Planos e limites</h2>
       <p>
-        O Serviço pode oferecer um plano gratuito com limites de uso e planos
-        pagos com limites maiores. Os limites e preços podem mudar, com aviso
-        prévio quando aplicável.
+        O Serviço tem um plano gratuito (Free), com limites de uso, e um plano
+        pago (Pro), que amplia esses limites. Os limites e os preços vigentes
+        ficam na página de Assinatura e podem mudar, com aviso prévio quando
+        aplicável.
       </p>
+      <ul>
+        <li>
+          O Pro é uma assinatura mensal ou anual, cobrada de forma recorrente
+          por meio da Asaas, até que seja cancelada.
+        </li>
+        <li>
+          Você pode cancelar a qualquer momento na página de Assinatura. O
+          acesso ao Pro continua até o fim do período já pago e não há novas
+          cobranças.
+        </li>
+        <li>
+          Se um pagamento não for identificado, o acesso ao Pro é mantido por
+          alguns dias e depois a conta volta para o Free. Nenhum dado é apagado
+          por isso.
+        </li>
+        <li>
+          Você pode desistir da contratação em até 7 dias após a primeira
+          cobrança e pedir o reembolso pelo contato abaixo.
+        </li>
+        <li>
+          Para excluir a conta é preciso antes cancelar a assinatura, para que
+          nenhuma cobrança nova seja gerada.
+        </li>
+      </ul>
 
       <h2>6. Isenção de garantias</h2>
       <p>

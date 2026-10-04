@@ -7,6 +7,7 @@ import {
   Pagination,
   SegmentedNav,
 } from "@/design-system";
+import { ProUpsell } from "@/features/billing/components/ProUpsell";
 import { FilterTransition } from "@/features/followers/components/FilterTransition";
 import { FollowerEventList } from "@/features/followers/components/FollowerEventList";
 import { FollowerFilterCombobox } from "@/features/followers/components/FollowerFilterCombobox";
@@ -16,6 +17,7 @@ import {
   EVENT_TYPES,
 } from "@/features/followers/model/event-labels";
 import { authed } from "@/server/services/authed";
+import { authService } from "@/server/services/auth.service";
 import { withFilterValidation } from "@/server/services/filter-result";
 import { followersService } from "@/server/services/followers.service";
 import {
@@ -47,11 +49,15 @@ export default async function UnfollowsPage({
     rawType === "all" ? undefined : (oneOf(rawType, EVENT_TYPES) ?? "lost");
   const filterKey = type ?? "all";
   const typeQuery = filterKey === "lost" ? undefined : filterKey;
-  const user = firstParam(params, "user") || undefined;
+  const requestedUser = firstParam(params, "user") || undefined;
   const page = pageParam(params);
 
-  const [events, filterOptions] = await authed((token) =>
-    Promise.all([
+  const { isPro, user, events, filterOptions } = await authed(async (token) => {
+    const { isPro } = await authService.me(token);
+    // Filtering by follower is a Pro feature; a Free user's link to one is
+    // simply ignored.
+    const user = isPro ? requestedUser : undefined;
+    const [events, filterOptions] = await Promise.all([
       withFilterValidation(() =>
         followersService.events(token, {
           type,
@@ -60,9 +66,11 @@ export default async function UnfollowsPage({
           limit: 25,
         }),
       ),
-      followersService.eventFilterOptions(token, { type }),
-    ]),
-  );
+      isPro ? followersService.eventFilterOptions(token, { type }) : null,
+    ]);
+    return { isPro, user, events, filterOptions };
+  });
+  const locked = events.ok ? events.data.locked : 0;
 
   return (
     <>
@@ -86,14 +94,30 @@ export default async function UnfollowsPage({
               }))}
             />
           </div>
-          <FollowerFilterCombobox
-            initialOptions={filterOptions}
-            scope={{ scope: "events", type }}
-            value={user}
-            path={PATH}
-            query={{ type: typeQuery }}
-          />
+          {filterOptions && (
+            <FollowerFilterCombobox
+              initialOptions={filterOptions}
+              scope={{ scope: "events", type }}
+              value={user}
+              path={PATH}
+              query={{ type: typeQuery }}
+            />
+          )}
         </div>
+
+        {!isPro && locked > 0 && (
+          <ProUpsell
+            className="mb-4"
+            title={
+              locked === 1
+                ? "1 evento oculto no plano Free"
+                : `${locked} eventos ocultos no plano Free`
+            }
+          >
+            O Free mostra só quem deixou de seguir nos últimos 30 dias. O Pro
+            libera o histórico completo, os novos seguidores e quem voltou.
+          </ProUpsell>
+        )}
 
         {!events.ok ? (
           <InvalidFilterAlert
@@ -125,7 +149,11 @@ export default async function UnfollowsPage({
                     ? `Nenhum evento "${EVENT_LABEL[type].label.toLowerCase()}"`
                     : "Nenhum evento ainda"
                 }
-                description="Os eventos aparecem a partir da segunda sincronização completa."
+                description={
+                  locked > 0
+                    ? "Há eventos aqui, mas eles só aparecem no plano Pro."
+                    : "Os eventos aparecem a partir da segunda importação."
+                }
               />
             )}
           </Card>

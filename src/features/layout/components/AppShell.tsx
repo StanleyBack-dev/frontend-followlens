@@ -4,8 +4,10 @@ import { useState, useSyncExternalStore, type ReactNode } from "react";
 import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  AtSign,
   ChevronDown,
   CircleUserRound,
+  CreditCard,
   History,
   LayoutDashboard,
   LogOut,
@@ -23,10 +25,17 @@ import { Alert, Button, cn, Modal, Spinner } from "@/design-system";
 import { authClient } from "@/features/auth/api/auth.client";
 import { Logo } from "@/features/layout/components/Logo";
 import { LogoMark } from "@/features/layout/components/LogoMark";
-import type { SessionUser } from "@/shared/contracts/api";
+import { ProfileSwitcher } from "@/features/profiles/components/ProfileSwitcher";
+import type { ActiveProfiles, SessionUser } from "@/shared/contracts/api";
 import { formatDate } from "@/shared/lib/format";
 
-type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavItem = {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  /** Active only on this exact path (it has sibling pages nested under it). */
+  exact?: boolean;
+};
 
 const BASE_NAV: NavItem[] = [
   { href: "/dashboard", label: "Visão geral", icon: LayoutDashboard },
@@ -37,7 +46,9 @@ const BASE_NAV: NavItem[] = [
 
 // "Conta" group. Every user sees their own profile.
 const ACCOUNT_NAV: NavItem[] = [
-  { href: "/account", label: "Perfil", icon: UserRound },
+  { href: "/account", label: "Perfil", icon: UserRound, exact: true },
+  { href: "/account/profiles", label: "Perfis do Instagram", icon: AtSign },
+  { href: "/account/billing", label: "Assinatura", icon: CreditCard },
 ];
 
 // Admin-only item (users + sync history live under /admin). `isAdmin` comes
@@ -85,8 +96,11 @@ function NavPendingHint() {
   ) : null;
 }
 
-function isActive(pathname: string, href: string): boolean {
-  return pathname === href || pathname.startsWith(`${href}/`);
+function isActive(pathname: string, item: NavItem): boolean {
+  return (
+    pathname === item.href ||
+    (!item.exact && pathname.startsWith(`${item.href}/`))
+  );
 }
 
 function NavLink({
@@ -102,7 +116,7 @@ function NavLink({
   onNavigate: () => void;
 }) {
   const { href, label, icon: Icon } = item;
-  const active = isActive(pathname, href);
+  const active = isActive(pathname, item);
   return (
     <Link
       href={href}
@@ -131,9 +145,11 @@ function NavLink({
 
 export function AppShell({
   user,
+  profiles,
   children,
 }: {
   user: SessionUser;
+  profiles: ActiveProfiles;
   children: ReactNode;
 }) {
   const pathname = usePathname();
@@ -150,9 +166,7 @@ export function AppShell({
   const accountItems = user.isAdmin
     ? [...ACCOUNT_NAV, ...ADMIN_ACCOUNT_NAV]
     : ACCOUNT_NAV;
-  const accountActive = accountItems.some((item) =>
-    isActive(pathname, item.href),
-  );
+  const accountActive = accountItems.some((item) => isActive(pathname, item));
   // Starts open only when the current page lives inside the group.
   const [accountOpen, setAccountOpen] = useState(accountActive);
 
@@ -304,6 +318,7 @@ export function AppShell({
               )}
             </button>
           </div>
+          {!collapsed && <ProfileSwitcher profiles={profiles} />}
           {renderNav(collapsed)}
         </div>
         {renderFooter(collapsed)}
@@ -322,6 +337,7 @@ export function AppShell({
       </header>
       {open && (
         <div className="fixed inset-x-0 top-14 z-20 max-h-[calc(100dvh-3.5rem)] overflow-y-auto border-b border-border bg-surface p-4 shadow-card lg:hidden">
+          <ProfileSwitcher profiles={profiles} />
           {renderNav(false)}
           <div className="mt-4">{renderFooter(false)}</div>
         </div>

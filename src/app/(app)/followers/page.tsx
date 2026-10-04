@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Users } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, Users } from "lucide-react";
 import {
   Card,
   EmptyState,
@@ -7,11 +8,13 @@ import {
   Pagination,
   SegmentedNav,
 } from "@/design-system";
+import { BILLING_PATH } from "@/features/billing/model/billing-labels";
 import { FilterTransition } from "@/features/followers/components/FilterTransition";
 import { FollowerFilterCombobox } from "@/features/followers/components/FollowerFilterCombobox";
 import { FollowerList } from "@/features/followers/components/FollowerList";
 import { InvalidFilterAlert } from "@/features/followers/components/InvalidFilterAlert";
 import { authed } from "@/server/services/authed";
+import { authService } from "@/server/services/auth.service";
 import { withFilterValidation } from "@/server/services/filter-result";
 import { followersService } from "@/server/services/followers.service";
 import {
@@ -36,22 +39,29 @@ export default async function FollowersPage({
     oneOf(firstParam(params, "status"), ["active", "lost"] as const) ??
     "active";
   const statusQuery = status === "active" ? undefined : status;
-  const user = firstParam(params, "user") || undefined;
+  const requestedUser = firstParam(params, "user") || undefined;
   const page = pageParam(params);
 
-  const [list, overview, filterOptions] = await authed((token) =>
-    Promise.all([
-      withFilterValidation(() =>
-        followersService.list(token, {
-          status,
-          username: user,
-          page,
-          limit: 30,
-        }),
-      ),
-      followersService.overview(token),
-      followersService.filterOptions(token, { status }),
-    ]),
+  const { user, list, overview, filterOptions } = await authed(
+    async (token) => {
+      const { isPro } = await authService.me(token);
+      // Filtering by follower is a Pro feature; a Free user's link to one is
+      // simply ignored.
+      const user = isPro ? requestedUser : undefined;
+      const [list, overview, filterOptions] = await Promise.all([
+        withFilterValidation(() =>
+          followersService.list(token, {
+            status,
+            username: user,
+            page,
+            limit: 30,
+          }),
+        ),
+        followersService.overview(token),
+        isPro ? followersService.filterOptions(token, { status }) : null,
+      ]);
+      return { user, list, overview, filterOptions };
+    },
   );
 
   return (
@@ -81,13 +91,23 @@ export default async function FollowersPage({
               },
             ]}
           />
-          <FollowerFilterCombobox
-            initialOptions={filterOptions}
-            scope={{ scope: "followers", status }}
-            value={user}
-            path={PATH}
-            query={{ status: statusQuery }}
-          />
+          {filterOptions ? (
+            <FollowerFilterCombobox
+              initialOptions={filterOptions}
+              scope={{ scope: "followers", status }}
+              value={user}
+              path={PATH}
+              query={{ status: statusQuery }}
+            />
+          ) : (
+            <Link
+              href={BILLING_PATH}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+            >
+              <Sparkles className="size-3.5" aria-hidden />
+              Busca por seguidor no Pro
+            </Link>
+          )}
         </div>
 
         {!list.ok ? (
