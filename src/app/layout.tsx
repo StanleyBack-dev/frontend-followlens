@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   title: { default: "FollowLens", template: "%s · FollowLens" },
   description: "Monitore quem deixou de seguir você no Instagram.",
   robots: { index: false, follow: false },
+  // Title and status bar of the installed app on iOS.
+  appleWebApp: {
+    capable: true,
+    title: "FollowLens",
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export const viewport: Viewport = {

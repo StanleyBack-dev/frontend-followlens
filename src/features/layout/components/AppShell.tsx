@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Alert, Button, cn, Modal, Spinner } from "@/design-system";
 import { authClient } from "@/features/auth/api/auth.client";
+import { InstallAppInvite } from "@/features/install/components/InstallAppInvite";
 import { Logo } from "@/features/layout/components/Logo";
 import { LogoMark } from "@/features/layout/components/LogoMark";
 import { ProfileSwitcher } from "@/features/profiles/components/ProfileSwitcher";
@@ -314,6 +315,8 @@ export function AppShell({
         )}
         {children}
       </main>
+
+      <InstallAppInvite />
 
       <Modal
         open={logoutOpen}

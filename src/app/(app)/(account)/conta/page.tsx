@@ -3,6 +3,7 @@ import { Avatar, Badge, Card, CardBody, CardHeader } from "@/design-system";
 import { AccountDeletionCard } from "@/features/account/components/AccountDeletionCard";
 import { ProfileForm } from "@/features/account/components/ProfileForm";
 import { PLAN_LABEL, ROLE_LABEL } from "@/features/admin/model/admin-labels";
+import { InstallAppCard } from "@/features/install/components/InstallAppCard";
 import { accountService } from "@/server/services/account.service";
 import { authed } from "@/server/services/authed";
 import { formatDate, formatDateTime } from "@/shared/lib/format";
@@ -59,6 +60,8 @@ export default async function AccountPage() {
             <ProfileForm profile={profile} />
           </CardBody>
         </Card>
+
+        <InstallAppCard />
 
         <AccountDeletionCard profile={profile} />
       </div>

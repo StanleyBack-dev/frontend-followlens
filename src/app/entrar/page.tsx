@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Card } from "@/design-system";
 import { GoogleSignIn } from "@/features/auth/components/GoogleSignIn";
+import { LoginShowcase } from "@/features/auth/components/LoginShowcase";
 import { Logo } from "@/features/layout/components/Logo";
 import { firstParam, type RawSearchParams } from "@/shared/lib/search-params";
 
@@ -16,37 +17,52 @@ export default async function LoginPage({
   const expired = firstParam(params, "expired") === "1";
 
   return (
-    <main className="grid min-h-dvh place-items-center px-4 py-10">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 flex justify-center">
+    <main className="min-h-dvh lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      {/* What it is + sign-in. First on every screen size. */}
+      <section className="flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-16">
+        <div className="mx-auto w-full max-w-md">
           <Logo size="lg" />
-        </div>
-        <Card className="p-6 sm:p-8">
-          <h1 className="text-center text-xl font-semibold text-fg">
-            Entrar no FollowLens
+          <h1 className="mt-10 text-3xl font-semibold tracking-tight text-fg sm:text-4xl">
+            Descubra quem deixou de seguir você no Instagram
           </h1>
-          <p className="mt-1 mb-6 text-center text-sm text-muted">
-            Descubra quem deixou de seguir você.
+          <p className="mt-4 text-base text-muted">
+            O FollowLens compara as suas listas de seguidores e mostra quem
+            saiu, quem chegou e quem voltou — sem pedir a senha do Instagram.
           </p>
-          {expired && (
-            <p className="mb-4 rounded-md bg-warning-soft px-3 py-2 text-center text-sm text-warning">
-              Sua sessão expirou. Entre novamente.
+
+          <Card className="mt-8 p-6">
+            <h2 className="text-center text-base font-semibold text-fg">
+              Entre ou crie sua conta
+            </h2>
+            <p className="mt-1 mb-5 text-center text-sm text-muted">
+              É grátis para começar. Use a sua conta Google.
             </p>
-          )}
-          <GoogleSignIn />
-        </Card>
-        <p className="mt-6 text-center text-xs text-soft">
-          Ao entrar, você concorda com os{" "}
-          <Link href="/termos" className="underline hover:text-muted">
-            Termos de Uso
-          </Link>{" "}
-          e a{" "}
-          <Link href="/privacidade" className="underline hover:text-muted">
-            Política de Privacidade
-          </Link>
-          .
-        </p>
-      </div>
+            {expired && (
+              <p className="mb-4 rounded-md bg-warning-soft px-3 py-2 text-center text-sm text-warning">
+                Sua sessão expirou. Entre novamente.
+              </p>
+            )}
+            <GoogleSignIn />
+          </Card>
+
+          <p className="mt-5 text-center text-xs text-soft">
+            Ao entrar, você concorda com os{" "}
+            <Link href="/termos" className="underline hover:text-muted">
+              Termos de Uso
+            </Link>{" "}
+            e a{" "}
+            <Link href="/privacidade" className="underline hover:text-muted">
+              Política de Privacidade
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* How it works. Beside the sign-in on wide screens, below it otherwise. */}
+      <section className="flex flex-col justify-center border-t border-border bg-surface-sunken px-6 py-12 sm:px-10 lg:border-t-0 lg:border-l lg:px-16">
+        <LoginShowcase />
+      </section>
     </main>
   );
 }
