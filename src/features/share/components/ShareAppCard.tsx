@@ -33,11 +33,15 @@ const targetClasses = cn(
 export function ShareAppCard({
   url,
   message,
+  title = "Compartilhar o FollowLens",
+  description = "Indique o app para quem também quer saber quem deixou de seguir.",
 }: {
-  /** Public address of the app. */
+  /** Link to share (the app, or the user's referral link). */
   url: string;
   /** Suggested text that goes with the link. */
   message: string;
+  title?: string;
+  description?: string;
 }) {
   const [copied, setCopied] = useState(false);
   // The device's own share sheet (mostly phones); unknown on the server.
@@ -104,10 +108,7 @@ export function ShareAppCard({
 
   return (
     <Card>
-      <CardHeader
-        title="Compartilhar o FollowLens"
-        description="Indique o app para quem também quer saber quem deixou de seguir."
-      />
+      <CardHeader title={title} description={description} />
       <CardBody className="space-y-4">
         <ul className="grid grid-cols-3 gap-2 sm:grid-cols-6">
           {targets.map((target) => (

@@ -7,13 +7,20 @@ import { InstallAppCard } from "@/features/install/components/InstallAppCard";
 import { ShareAppCard } from "@/features/share/components/ShareAppCard";
 import { accountService } from "@/server/services/account.service";
 import { authed } from "@/server/services/authed";
+import { referralsService } from "@/server/services/referrals.service";
 import { formatDate, formatDateTime } from "@/shared/lib/format";
+import { referralLink } from "@/shared/lib/referral";
 import { SITE_NAME, SITE_TAGLINE, siteUrl } from "@/shared/lib/site";
 
 export const metadata: Metadata = { title: "Perfil" };
 
 export default async function AccountPage() {
-  const profile = await authed((token) => accountService.profile(token));
+  const [profile, referrals] = await authed((token) =>
+    Promise.all([
+      accountService.profile(token),
+      referralsService.overview(token),
+    ]),
+  );
 
   const details = [
     { label: "Plano", value: PLAN_LABEL[profile.plan] },
@@ -66,7 +73,7 @@ export default async function AccountPage() {
         <InstallAppCard />
 
         <ShareAppCard
-          url={siteUrl()}
+          url={referralLink(siteUrl(), referrals.code)}
           message={`${SITE_TAGLINE} com o ${SITE_NAME}.`}
         />
 

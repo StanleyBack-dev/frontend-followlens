@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Card } from "@/design-system";
 import { GoogleSignIn } from "@/features/auth/components/GoogleSignIn";
+import { ReferralCapture } from "@/features/referrals/components/ReferralCapture";
 import { LoginShowcase } from "@/features/auth/components/LoginShowcase";
 import { Logo } from "@/features/layout/components/Logo";
 import { firstParam, type RawSearchParams } from "@/shared/lib/search-params";
+import { REFERRAL_CODE, REFERRAL_PARAM } from "@/shared/lib/referral";
 import { SITE_NAME, SITE_TAGLINE } from "@/shared/lib/site";
 
 // The public face of the product: the only page (besides the legal ones)
@@ -22,6 +24,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const expired = firstParam(params, "expired") === "1";
+  const referralCode = firstParam(params, REFERRAL_PARAM)?.toUpperCase();
 
   return (
     <main className="min-h-dvh lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
@@ -48,6 +51,9 @@ export default async function LoginPage({
               <p className="mb-4 rounded-md bg-warning-soft px-3 py-2 text-center text-sm text-warning">
                 Sua sessão expirou. Entre novamente.
               </p>
+            )}
+            {referralCode && REFERRAL_CODE.test(referralCode) && (
+              <ReferralCapture code={referralCode} />
             )}
             <GoogleSignIn />
           </Card>

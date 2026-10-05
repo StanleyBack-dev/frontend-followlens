@@ -16,6 +16,8 @@ export default function robots(): MetadataRoute.Robots {
         "/importacoes",
         "/conta",
         "/suporte",
+        "/resumo",
+        "/conquistas",
         "/admin",
         "/aceitar-termos",
       ],

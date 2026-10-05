@@ -22,6 +22,8 @@ export const config = {
     "/importacoes/:path*",
     "/conta/:path*",
     "/suporte/:path*",
+    "/resumo/:path*",
+    "/conquistas/:path*",
     "/admin/:path*",
   ],
 };

@@ -7,6 +7,7 @@ const TABS = [
   { href: "/conta", label: "Perfil", exact: true },
   { href: "/conta/perfis", label: "Perfis do Instagram" },
   { href: "/conta/assinatura", label: "Assinatura" },
+  { href: "/conta/indicacoes", label: "Indicações" },
   { href: "/suporte", label: "Suporte" },
 ];
 

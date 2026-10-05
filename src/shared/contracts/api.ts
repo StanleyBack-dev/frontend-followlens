@@ -234,7 +234,9 @@ export type CancellationReason =
 export type SubscriptionSummary = {
   hasProAccess: boolean;
   /** Why the user has Pro, when they do. */
-  proSource: "subscription" | "courtesy" | "admin" | null;
+  proSource: "subscription" | "courtesy" | "admin" | "bonus" | null;
+  /** End of a time-limited Pro earned by referrals, when one is running. */
+  proBonusUntil: string | null;
   subscription: {
     status: SubscriptionStatus;
     billingCycle: BillingCycle | null;
@@ -344,6 +346,62 @@ export type AdminSubscription = {
   currentPeriodEnd: string | null;
   cancelAtPeriodEnd: boolean;
   pastDueSince: string | null;
+};
+
+// === Referrals ===
+export type ReferralOverview = {
+  code: string;
+  rewardDays: number;
+  clicks: number;
+  clicksLast7Days: number;
+  /** When the latest clicks happened, newest first. */
+  latestClicks: string[];
+  invited: number;
+  qualified: number;
+  daysEarned: number;
+  proBonusUntil: string | null;
+  friends: { name: string; joinedAt: string; qualified: boolean }[];
+};
+
+// === Engagement ===
+export type AchievementKey =
+  | "first_import"
+  | "first_comparison"
+  | "imports_10"
+  | "imports_25"
+  | "streak_4"
+  | "streak_12"
+  | "followers_1k"
+  | "followers_5k"
+  | "followers_10k"
+  | "first_referral";
+
+export type Achievement = {
+  key: AchievementKey;
+  unlocked: boolean;
+  unlockedAt: string | null;
+  current: number;
+  target: number;
+};
+
+export type AchievementsView = {
+  streak: { current: number; best: number; activeThisWeek: boolean };
+  achievements: Achievement[];
+};
+
+export type MonthlySummary = {
+  /** YYYY-MM */
+  month: string;
+  current: boolean;
+  imports: number;
+  gained: number;
+  returned: number;
+  lost: number;
+  net: number;
+  followersAtStart: number | null;
+  followersAtEnd: number | null;
+  /** Month of the profile's first import; null before any import. */
+  firstMonth: string | null;
 };
 
 /** Error shape returned by every BFF route. */
