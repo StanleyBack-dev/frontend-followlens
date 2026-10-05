@@ -9,10 +9,13 @@ type GoogleLoginResponse = {
 };
 
 export const authService = {
-  loginWithGoogle(idToken: string): Promise<GoogleLoginResponse> {
+  loginWithGoogle(
+    idToken: string,
+    referralCode?: string,
+  ): Promise<GoogleLoginResponse> {
     return backendFetch<GoogleLoginResponse>("/auth/google", {
       method: "POST",
-      body: { idToken },
+      body: { idToken, referralCode },
     });
   },
 

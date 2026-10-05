@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore, type ReactNode } from "react";
 import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  CalendarRange,
   CircleUserRound,
   History,
   LayoutDashboard,
@@ -13,6 +14,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   ShieldCheck,
+  Trophy,
   UserMinus,
   Users,
   X,
@@ -39,6 +41,8 @@ const BASE_NAV: NavItem[] = [
   { href: "/historico", label: "Unfollows", icon: UserMinus },
   { href: "/seguidores", label: "Seguidores", icon: Users },
   { href: "/importacoes", label: "Importações", icon: History },
+  { href: "/resumo", label: "Resumo mensal", icon: CalendarRange },
+  { href: "/conquistas", label: "Conquistas", icon: Trophy },
 ];
 
 // Everything about the user's own account lives on one page with tabs

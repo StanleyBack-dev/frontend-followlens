@@ -19,6 +19,7 @@ import {
 } from "@/features/billing/model/billing-labels";
 import { authed } from "@/server/services/authed";
 import { billingService } from "@/server/services/billing.service";
+import { formatDate } from "@/shared/lib/format";
 import {
   buildHref,
   firstParam,
@@ -72,11 +73,13 @@ export default async function BillingPage({
             <CardHeader
               title={summary.hasProAccess ? "FollowLens Pro" : "Plano Free"}
               description={
-                summary.proSource === "courtesy"
-                  ? "Seu Pro foi liberado pela administração, sem cobrança."
-                  : summary.proSource === "admin"
-                    ? "Administradores têm todos os recursos do Pro, sem cobrança."
-                    : "O que você ganha ao assinar o Pro:"
+                summary.proSource === "bonus"
+                  ? `Você está com o Pro por indicações até ${formatDate(summary.proBonusUntil)}.`
+                  : summary.proSource === "courtesy"
+                    ? "Seu Pro foi liberado pela administração, sem cobrança."
+                    : summary.proSource === "admin"
+                      ? "Administradores têm todos os recursos do Pro, sem cobrança."
+                      : "O que você ganha ao assinar o Pro:"
               }
               action={
                 <Badge tone={summary.hasProAccess ? "accent" : "neutral"}>
